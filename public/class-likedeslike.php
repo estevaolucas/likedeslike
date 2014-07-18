@@ -179,4 +179,60 @@ class LikeDeslike {
     return $this->get_totalbytype( $postID, self::TYPE_DESLIKE );
 
   }
+
+  public function get_type_like () {
+
+    return self::TYPE_LIKE;
+
+  }
+
+  public function get_type_deslike () {
+
+    return self::TYPE_DESLIKE;
+
+  }
+
+  public static function process_rating () {
+    $likedeslike = self::get_instance();
+
+    // TODO user id authentication;
+    $likedeslike->post_rating($_POST);
+
+    die();
+
+  }
+
+  private function post_rating ( $data ) {
+    // TODO validation
+    header('Content-Type: application/json');
+
+    global $wpdb;
+
+    $wpdb->likedelike_posts = "{$wpdb->prefix}likedelike_posts";
+
+    $column_formats = $this->get_table_columns();
+    $data = array_intersect_key( $data, $column_formats );
+
+    //Reorder $column_formats to match the order of columns given in $data
+    $data_keys = array_keys( $data );
+    $column_formats = array_merge( array_flip($data_keys ), $column_formats );
+
+    $return = array( 'success' => false );
+
+    if ( $wpdb->insert( $wpdb->likedelike_posts, $data, $column_formats ) ) {
+      $return['success'] = true;
+      $return['count'] = $this->get_totalbytype( $data['post_id'], $data['type'] );
+    }
+
+    echo json_encode( $return );
+  }
+
+  private function get_table_columns(){
+    return array(
+        'ID'      => '%d',
+        'user_id' => '%d',
+        'post_id' =>'%d',
+        'type'    =>'%d'
+    );
+  }
 }

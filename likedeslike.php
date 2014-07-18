@@ -45,3 +45,6 @@ register_activation_hook( __FILE__, array( 'LikeDeslike', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'LikeDeslike', 'deactivate' ) );
 
 add_action( 'plugins_loaded', array( 'LikeDeslike', 'get_instance' ) );
+
+add_action('wp_ajax_likedeslike_process_rating', array( 'LikeDeslike', 'process_rating' ));
+add_action('wp_ajax_nopriv_likedeslike_process_rating', array( 'LikeDeslike', 'process_rating' ));
