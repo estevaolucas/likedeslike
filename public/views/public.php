@@ -18,8 +18,9 @@ function get_totalbytype ( $postID = null, $type ) {
   }
 
   $typeclass = $type == $likeDeslike->get_type_like() ? 'like' : 'deslike';
+  $token = $likeDeslike->token($postID, $type);
   
-  return '<span class="likedeslike ' . $typeclass . '" data-post_id="'. $postID . '" data-type="' .  $type . '">' . $likeDeslike->get_totalbytype( $postID, $type ) . '</span>';
+  return "<span class=\"likedeslike {$typeclass}\" data-token=\"{$token}\">{$likeDeslike->get_totalbytype( $postID, $type )}</span>";
 }
 
 function the_total_like ( $postID = null ) {
@@ -37,17 +38,14 @@ function rating_button ( $title, $postID = null, $type ) {
 
   if ( empty( $title ) ) {
     $title = __($type == $likeDeslike->get_type_like() ? 'Like' : 'Deslike', 'likedeslike');
-  } else {
-    $title = __($title, 'likedeslike');
   }
 
   $typeclass = $type == $likeDeslike->get_type_like() ? 'like' : 'deslike';
   $ajaxurl = site_url() . '/wp-admin/admin-ajax.php';
-  $action = 'likedeslike_process_rating';
+  $action = $likeDeslike->get_ajax_action();
+  $token = $likeDeslike->token($postID, $type);
 
-  ?>
-  <button type="button" class="likedeslike <?php echo $typeclass; ?>" data-post_id="<?php echo trim($postID); ?>" data-type="<?php echo $type; ?>" data-url="<?php echo $ajaxurl; ?>" data-user_id="1" data-action="<?php echo $action; ?>"> <?php echo $title ?></button>
-  <?php
+  return "<button type=\"button\" class=\"likedeslike {$typeclass}\" data-token=\"{$token}\" data-url=\"{$ajaxurl}\" data-user_id=\"1\" data-action=\"{$action}\">{$title}</button>";
 }
 
 function the_like_button ( $title = null,  $postID = null ) {
@@ -57,7 +55,7 @@ function the_like_button ( $title = null,  $postID = null ) {
 
   global $likeDeslike;
 
-  rating_button( $title, $postID, $likeDeslike->get_type_like() );
+  echo rating_button( $title, $postID, $likeDeslike->get_type_like() );
 }
 
 function the_deslike_button ( $title = null, $postID = null ) {
@@ -67,7 +65,7 @@ function the_deslike_button ( $title = null, $postID = null ) {
 
   global $likeDeslike;
 
-  rating_button( $title, $postID, $likeDeslike->get_type_deslike() );
+  echo rating_button( $title, $postID, $likeDeslike->get_type_deslike() );
 }
 
 ?>

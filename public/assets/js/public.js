@@ -3,6 +3,7 @@
 
 	$(function () {
     var busy = false; 
+
     $('button.likedeslike').on('click', function() {
       var data = $(this).data();
 
@@ -17,10 +18,8 @@
         data: data,
         type: 'POST',
         success: function(response) {
-          console.log(response);
           if (response.success) {
-            console.log("span.likedeslike[data-post-id='" + data.post_id + "'][data-type='" +  data.type + "'");
-            $("span.likedeslike[data-post_id='" + data.post_id + "'][data-type='" + data.type + "']").text(response.count);
+            $("span.likedeslike[data-token='" + data.token + "']").text(response.count);
           }
 
           busy = false;
